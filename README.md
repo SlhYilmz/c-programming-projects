@@ -5,7 +5,7 @@ structures, serialization, and memory management.
 
 ## Projects
 
-- [`sorting`](sorting/) — bubble sort, quicksort, and selection sort examples,
+- [`algorithms/sorting`](algorithms/sorting/) — bubble sort, quicksort, and selection sort examples,
   imported from [Sorting-Algorithms](https://github.com/SlhYilmz/Sorting-Algorithms).
 - [`data-structures`](data-structures/) — array, linked-list, queue, and stack
   operations, imported from
