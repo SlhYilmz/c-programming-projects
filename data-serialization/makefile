@@ -1,37 +1,66 @@
-# Makefile for compiling C code
-
-# Compiler
 CC := gcc
 
-# Compiler flags
-CFLAGS := -std=c99 -g -Wall -Wextra -pedantic -D_DEFAULT_SOURCE
+CPPFLAGS := -Iinc -Isrc -D_DEFAULT_SOURCE -MMD -MP
+CFLAGS := \
+	-std=c99 \
+	-g \
+	-pedantic \
+	-Wall \
+	-Wextra \
+	-Werror \
+	-Wpointer-arith \
+	-Wshadow \
+	-Wuninitialized \
+	-Wunused-function \
+	-Wmissing-declarations \
+	-Wmissing-prototypes \
+	-Wstrict-prototypes \
+	-Wconversion \
+	-Wsign-conversion \
+	-Wcast-align \
+	-fno-builtin \
+	-fno-common \
+	-finput-charset=UTF-8 \
+	-Werror=date-time
+LDFLAGS :=
+LDLIBS :=
 
-# Linker flags
-LDFLAGS :=  #-pthread -lrt
+BUILD_DIR := build
+OBJ_DIR := $(BUILD_DIR)/obj
+BIN_DIR := $(BUILD_DIR)/bin
 
-# Source Files
-SOURCES := main.c packer.c endian.c helper.c 
+ifeq ($(OS),Windows_NT)
+EXEEXT := .exe
+endif
 
-# Object files
-OBJECTS := $(SOURCES:.c=.o)
+TARGET := $(BIN_DIR)/logbook$(EXEEXT)
 
-# Executables
-TARGET := main
+# main.c remains at the project root; implementation files are discovered
+# automatically whenever a .c file is added to src/.
+SOURCES := main.c $(sort $(wildcard src/*.c))
+OBJECTS := $(addprefix $(OBJ_DIR)/,$(notdir $(SOURCES:.c=.o)))
+DEPS := $(OBJECTS:.o=.d)
 
-# Phony targets (targets that are not associated with files)
-.PHONY: all clean
+.PHONY: all clean run
 
-# Default target
 all: $(TARGET)
 
-# Rule for generating the executable
 $(TARGET): $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) -o $@ $(LDFLAGS)
+	@mkdir -p $(@D)
+	$(CC) $(LDFLAGS) $(OBJECTS) $(LDLIBS) -o $@
 
-# Rule for compiling C source files
-%.o: %.c
-	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+$(OBJ_DIR)/main.o: main.c
+	@mkdir -p $(@D)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-# Cleanup target
+$(OBJ_DIR)/%.o: src/%.c
+	@mkdir -p $(@D)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+run: $(TARGET)
+	$(TARGET)
+
 clean:
-	rm -f $(TARGET) $(OBJECTS)
+	rm -rf $(BUILD_DIR)
+
+-include $(DEPS)

@@ -18,7 +18,7 @@
 void dump_logbook(LOGBOOK logbook);
 
 /* Prints the sizes of each data-type. It is for the programmer, not the end-user. */
-void print_sizes_of_types();
+void print_sizes_of_types(void);
 
 /* Prints the contents of the buffer. */
 void print_buffer_raw_data(const BUFFER *buf);

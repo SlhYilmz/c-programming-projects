@@ -16,8 +16,8 @@
 #define BUFFER_SIZE_TOO_SMALL 0
 #define BUFFER_SIZE_OK 1
 
-// Declare a global instance of BUFFER
-BUFFER buf = {
+// Buffer used by the public serialization API.
+static BUFFER serialization_buffer = {
     .size = INITIAL_SIZE,
     .data = NULL, // We'll initialize this later
     .next = 0,
@@ -29,14 +29,14 @@ BUFFER buf = {
 static char buffer_data[INITIAL_SIZE];
 
 // Buffer'in dolu olan size boyutunu dondurur. Length yani.
-size_t length_data()
+size_t length_data(void)
 {
-    return buf.next;
+    return serialization_buffer.next;
 }
 
 void *serialize(LOGBOOK logbook, size_t *length)
 {
-    buf.data = buffer_data;
+    serialization_buffer.data = buffer_data;
 
     // uint64_t my_checksum = calculate_checksum((unsigned char *)&logbook, sizeof(logbook), &buf);
     // // printf("checksum sender: %lld\n\r", buf.checksum);
@@ -44,28 +44,28 @@ void *serialize(LOGBOOK logbook, size_t *length)
     // printf("my_chekcsum: %ld\n", my_checksum);
     // add_checksum_info(&buf);
 
-    serialize_LOGBOOK(&buf, logbook);
+    serialize_LOGBOOK(&serialization_buffer, logbook);
 
-    *length = buf.next;
+    *length = serialization_buffer.next;
 
-    print_buffer_raw_data(&buf);
+    print_buffer_raw_data(&serialization_buffer);
     printf("\n\r");
     // dump_logbook(logbook);
     printf("\n\r");
     // print_buffer_info(&buf);
-    return buf.data;
+    return serialization_buffer.data;
 }
 
-void deserialize(LOGBOOK logbook, unsigned char msg[250], signed int length)
+void deserialize(LOGBOOK logbook, unsigned char msg[250], size_t length)
 {
-    if (length == 0 || length < 0)
+    if (length == 0U)
     {
         printf("Message not received, or message is null.\n\r");
     }
     else
     {
-        buf.data = msg;
-        buf.next = (size_t)length;
+        serialization_buffer.data = msg;
+        serialization_buffer.next = length;
 
         // uint64_t received_checksum = *((uint64_t *)buf.data);
         // uint64_t serialized_checksum;
@@ -82,9 +82,9 @@ void deserialize(LOGBOOK logbook, unsigned char msg[250], signed int length)
         // printf("\n\r");
         // if (received_checksum == serialized_checksum)
         // {
-            deserialize_LOGBOOK(&buf, &logbook);
+            deserialize_LOGBOOK(&serialization_buffer, &logbook);
             printf("\n\rAFTER DESERIALIZATON\n\r");
-            print_buffer_raw_data(&buf);
+            print_buffer_raw_data(&serialization_buffer);
             // dump_logbook(logbook);
         // }
         // else
@@ -127,7 +127,7 @@ void add_checksum_info(BUFFER *buf)
     }
 }
 
-BUFFER *new_buffer()
+BUFFER *new_buffer(void)
 {
     BUFFER *buf = malloc(sizeof(BUFFER));
 
@@ -623,7 +623,7 @@ void serialize_LOGBOOK(BUFFER *buf, LOGBOOK logbook)
 {
     // serialize_float(buf, logbook.my_float);
 
-    SERIALIZE_GENERIC(buf, &logbook.logbook_id, sizeof(logbook.logbook_id), int64_t);
+    serialize_int64_t(buf, logbook.logbook_id);
     // serialize_int64_t(buf, logbook.logbook_id);
 
     // serialize_int32_t(buf, logbook.partition_id);
@@ -640,7 +640,7 @@ void deserialize_LOGBOOK(BUFFER *buf, LOGBOOK *logbook)
     buf->next = 0;
     // deserialize_float(buf, &logbook->my_float);
 
-    DESERIALIZE_GENERIC(buf, &logbook->logbook_id, sizeof(logbook->logbook_id), int64_t);
+    deserialize_int64_t(buf, &logbook->logbook_id);
     // deserialize_int64_t(buf, &logbook->logbook_id);
     // deserialize_int32_t(buf, &logbook->partition_id);
     // deserialize_string(buf, logbook->logbook_name);

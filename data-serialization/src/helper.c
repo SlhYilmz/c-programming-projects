@@ -16,27 +16,27 @@ void dump_logbook(LOGBOOK logbook)
 {
 	printf("\n");
 	printf("-------------------------------------------------------------------------------\n");
-	printf("logbook_id: %-20ld\n\r", logbook.logbook_id);
-	printf("partition_id: %-20d\n\r", logbook.partition_id);
+	printf("logbook_id: %-20lld\n\r", (long long)logbook.logbook_id);
+	printf("partition_id: %-20ld\n\r", (long)logbook.partition_id);
 	printf("logbook_name: %s\t\n", logbook.logbook_name);
 
 	printf("\n\rSTATUS\n\r");
-	printf("max_mes_size: %-16d\n\r", logbook.status.max_mes_size);
-	printf("max_nb_logged_mes: %-16d\n\r", logbook.status.max_nb_logged_mes);
-	printf("max_nb_in_progress_mes: %-16d\n\r", logbook.status.max_nb_in_progress_mes);
-	printf("nb_logged_mes: %-16d\n\r", logbook.status.nb_logged_mes);
-	printf("nb_in_progress_mes: %-16d\n\r", logbook.status.nb_in_progress_mes);
-	printf("nb_aborted_mes: %-16d\n\r", logbook.status.nb_aborted_mes);
+	printf("max_mes_size: %-16ld\n\r", (long)logbook.status.max_mes_size);
+	printf("max_nb_logged_mes: %-16ld\n\r", (long)logbook.status.max_nb_logged_mes);
+	printf("max_nb_in_progress_mes: %-16ld\n\r", (long)logbook.status.max_nb_in_progress_mes);
+	printf("nb_logged_mes: %-16ld\n\r", (long)logbook.status.nb_logged_mes);
+	printf("nb_in_progress_mes: %-16ld\n\r", (long)logbook.status.nb_in_progress_mes);
+	printf("nb_aborted_mes: %-16ld\n\r", (long)logbook.status.nb_aborted_mes);
 
 	printf("\n\rLOGS ENG\n\r");
 	if(logbook.logs_eng != NULL)
 	{
-		printf("LOG_TYPE.id  %ld\t\n", logbook.logs_eng->id);
-		printf("LOG_TYPE.write_status  %d\t\n", logbook.logs_eng->write_status);
-		printf("LOG_TYPE.severity  %d\t\n", logbook.logs_eng->severity);
-		printf("LOG_TYPE.creation_time  %ld\t\n", logbook.logs_eng->creation_time);
+		printf("LOG_TYPE.id  %lld\t\n", (long long)logbook.logs_eng->id);
+		printf("LOG_TYPE.write_status  %lu\t\n", (unsigned long)logbook.logs_eng->write_status);
+		printf("LOG_TYPE.severity  %lu\t\n", (unsigned long)logbook.logs_eng->severity);
+		printf("LOG_TYPE.creation_time  %lld\t\n", (long long)logbook.logs_eng->creation_time);
 		printf("LOG_TYPE.log_data  %s\t\n", logbook.logs_eng->log_data);
-		printf("LOG_TYPE.log_data_size  %ld\t\n", logbook.logs_eng->log_data_size);
+		printf("LOG_TYPE.log_data_size  %llu\t\n", (unsigned long long)logbook.logs_eng->log_data_size);
 	}
 	
 	printf("-------------------------------------------------------------------------------\n");
@@ -50,7 +50,7 @@ void print_buffer_raw_data(const BUFFER *buf)
 	size_t i = 0;
 	for (i = 0; i < buf->next; i++)
 	{
-		printf("%02X ", byte[i]); // Print as hexadecimal
+		printf("%02X ", (unsigned int)byte[i]); // Print as hexadecimal
 								  // printf("i: %ld \n", i);
 	}
 }
@@ -59,44 +59,44 @@ void print_buffer_raw_data(const BUFFER *buf)
 void print_buffer_info(const BUFFER *buf)
 {
 	printf("\n\r");
-	printf("(buf->next): %ld \n\r", (buf->next));
-	printf("(buf->size): %ld \n\r", (buf->size));
-	printf("sizeof(buf->next): %ld \n\r", sizeof(buf->next));
-	printf("sizeof(buf->size): %ld \n\r", sizeof(buf->size));
-	printf("sizeof(buf->checksum): %ld \n\r", sizeof(buf->checksum));
+	printf("(buf->next): %zu \n\r", buf->next);
+	printf("(buf->size): %zu \n\r", buf->size);
+	printf("sizeof(buf->next): %zu \n\r", sizeof(buf->next));
+	printf("sizeof(buf->size): %zu \n\r", sizeof(buf->size));
+	printf("sizeof(buf->checksum): %zu \n\r", sizeof(buf->checksum));
 	printf("Address of buf->data is %p \n\r", (buf->data));
 	printf("\n\r");
 }
 
 /* Prints the sizes of each data-type. It is for the programmer, not the end-user. */
-void print_sizes_of_types()
+void print_sizes_of_types(void)
 {
 	printf("---------------------------\n");
-	printf("|  int8_t:   %2ld           |\n", sizeof(int8_t));
-	printf("| uint8_t:   %2ld           |\n", sizeof(uint8_t));
-	printf("|  int16_t:  %2ld           |\n", sizeof(int16_t));
-	printf("| uint16_t:  %2ld           |\n", sizeof(uint16_t));
-	printf("|  int32_t:  %2ld           |\n", sizeof(int32_t));
-	printf("| uint32_t:  %2ld           |\n", sizeof(uint32_t));
-	printf("|  int64_t:  %2ld           |\n", sizeof(int64_t));
-	printf("| uint64_t:  %2ld           |\n", sizeof(uint64_t));
-	printf("| float:     %2ld           |\n", sizeof(float));
-	printf("| double:    %2ld           |\n\r", sizeof(double));
-	printf("| STATUS:    %2ld           |\n\r", sizeof(STATUS));
+	printf("|  int8_t:   %2zu           |\n", sizeof(int8_t));
+	printf("| uint8_t:   %2zu           |\n", sizeof(uint8_t));
+	printf("|  int16_t:  %2zu           |\n", sizeof(int16_t));
+	printf("| uint16_t:  %2zu           |\n", sizeof(uint16_t));
+	printf("|  int32_t:  %2zu           |\n", sizeof(int32_t));
+	printf("| uint32_t:  %2zu           |\n", sizeof(uint32_t));
+	printf("|  int64_t:  %2zu           |\n", sizeof(int64_t));
+	printf("| uint64_t:  %2zu           |\n", sizeof(uint64_t));
+	printf("| float:     %2zu           |\n", sizeof(float));
+	printf("| double:    %2zu           |\n\r", sizeof(double));
+	printf("| STATUS:    %2zu           |\n\r", sizeof(STATUS));
 
 	printf("---------------------------\n");
 
-	printf("| signed int:  %2ld         |\n", sizeof(signed int));
-	printf("| signed char: %2ld         |\n", sizeof(signed char));
-	printf("| signed long: %2ld         |\n", sizeof(signed long));
-	printf("| signed long long: %2ld    |\n", sizeof(long long));
-	printf("| unsigned int:  %2ld       |\n", sizeof(unsigned int));
-	printf("| unsigned char: %2ld       |\n", sizeof(unsigned char));
-	printf("| unsigned long: %2ld       |\n", sizeof(unsigned long));
-	printf("| unsigned long long: %2ld  |\n", sizeof(unsigned long long));
-	printf("| float:  %2ld              |\n", sizeof(float));
-	printf("| double: %2ld              |\n\r", sizeof(double));
-	printf("| STATUS: %2ld              |\n\r", sizeof(STATUS));
+	printf("| signed int:  %2zu         |\n", sizeof(signed int));
+	printf("| signed char: %2zu         |\n", sizeof(signed char));
+	printf("| signed long: %2zu         |\n", sizeof(signed long));
+	printf("| signed long long: %2zu    |\n", sizeof(long long));
+	printf("| unsigned int:  %2zu       |\n", sizeof(unsigned int));
+	printf("| unsigned char: %2zu       |\n", sizeof(unsigned char));
+	printf("| unsigned long: %2zu       |\n", sizeof(unsigned long));
+	printf("| unsigned long long: %2zu  |\n", sizeof(unsigned long long));
+	printf("| float:  %2zu              |\n", sizeof(float));
+	printf("| double: %2zu              |\n\r", sizeof(double));
+	printf("| STATUS: %2zu              |\n\r", sizeof(STATUS));
 
 	printf("---------------------------\n");
 }
@@ -186,8 +186,22 @@ void deserialize_logbook_from_file(const char *filename, LOGBOOK *logbook)
 	}
 
 	/* Get the file size to determine the buffer size */
-	fseek(file, 0, SEEK_END);
-	size_t file_size = ftell(file);
+	if (fseek(file, 0, SEEK_END) != 0)
+	{
+		fprintf(stderr, "Failed to determine the file size.\n");
+		fclose(file);
+		return;
+	}
+
+	long file_position = ftell(file);
+	if ((file_position < 0L) || ((uintmax_t)file_position > (uintmax_t)SIZE_MAX))
+	{
+		fprintf(stderr, "File size is invalid or too large.\n");
+		fclose(file);
+		return;
+	}
+
+	size_t file_size = (size_t)file_position;
 	new_rewind(file);
 
 	// printf("size: %ld\n", file_size);
