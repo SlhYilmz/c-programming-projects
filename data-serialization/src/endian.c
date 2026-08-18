@@ -47,11 +47,12 @@ uint8_t ntoh_uint8(uint8_t value)
 /* host byte order --> network byte order (big-endian): signed int 16 bit */
 int16_t hton_int16(int16_t value)
 {
-#if ENDIANNESS == LITTLE_ENDIAN
-    return ((value & 0x00FF) << 8) | ((value & 0xFF00) >> 8);
-#else
+    uint16_t bits;
+
+    memcpy(&bits, &value, sizeof(bits));
+    bits = hton_uint16(bits);
+    memcpy(&value, &bits, sizeof(value));
     return value;
-#endif
 }
 
 /*  network byte order --> host byte order: signed int 16 bit */
@@ -81,14 +82,12 @@ uint16_t ntoh_uint16(uint16_t value)
 /* host byte order --> network byte order (big-endian): signed int 32 bit */
 int32_t hton_int32(int32_t value)
 {
-#if ENDIANNESS == LITTLE_ENDIAN
-    return ((value & 0x000000FF) << 24) |
-           ((value & 0x0000FF00) << 8) |
-           ((value & 0x00FF0000) >> 8) |
-           ((value & 0xFF000000) >> 24);
-#else
+    uint32_t bits;
+
+    memcpy(&bits, &value, sizeof(bits));
+    bits = hton_uint32(bits);
+    memcpy(&value, &bits, sizeof(value));
     return value;
-#endif
 }
 
 /* network byte order --> host byte order: signed int 32 bit */
@@ -121,18 +120,12 @@ uint32_t ntoh_uint32(uint32_t value)
 /* host byte order --> network byte order (big-endian): signed int 64 bit */
 int64_t hton_int64(int64_t value)
 {
-#if ENDIANNESS == LITTLE_ENDIAN
-    return ((value & 0x00000000000000FFLL) << 56) |
-           ((value & 0x000000000000FF00LL) << 40) |
-           ((value & 0x0000000000FF0000LL) << 24) |
-           ((value & 0x00000000FF000000LL) << 8) |
-           ((value & 0x000000FF00000000LL) >> 8) |
-           ((value & 0x0000FF0000000000LL) >> 24) |
-           ((value & 0x00FF000000000000LL) >> 40) |
-           ((value & 0xFF00000000000000LL) >> 56);
-#else
+    uint64_t bits;
+
+    memcpy(&bits, &value, sizeof(bits));
+    bits = hton_uint64(bits);
+    memcpy(&value, &bits, sizeof(value));
     return value;
-#endif
 }
 
 /* network byte order --> host byte order: signed int 64 bit */
@@ -169,17 +162,23 @@ uint64_t ntoh_uint64(uint64_t value)
 /* host byte order --> network byte order (big-endian): float */
 float hton_float(float value)
 {
-    uint32_t temp = *((uint32_t*)&value);
+    uint32_t temp;
+
+    memcpy(&temp, &value, sizeof(temp));
     temp = hton_uint32(temp);
-    return *((float*)&temp);
+    memcpy(&value, &temp, sizeof(value));
+    return value;
 }
 
 /* network byte order --> host byte order: float */
 float ntoh_float(float value)
 {
-    uint32_t temp = *((uint32_t*)&value);
+    uint32_t temp;
+
+    memcpy(&temp, &value, sizeof(temp));
     temp = ntoh_uint32(temp);
-    return *((float*)&temp);
+    memcpy(&value, &temp, sizeof(value));
+    return value;
 }
 
 /**
@@ -201,7 +200,7 @@ double hton_double(double value)
 {
     uint64_t temp;
     memcpy(&temp, &value, sizeof(uint64_t));
-    temp = hton_int64(temp);
+    temp = hton_uint64(temp);
     memcpy(&value, &temp, sizeof(uint64_t));
     return value;
 }

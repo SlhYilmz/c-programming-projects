@@ -9,11 +9,7 @@
  ============================================================================
  */
 
-#include "packer.h"
-#include "endian.h"
-#include "helper.h"
-
-#define IS_LITTLE_ENDIAN (*(uint16_t *) "\0\x01" == 1U)
+#include "inc/logbook.h"
 
 /* Main */
 int main(void)
@@ -66,9 +62,6 @@ int main(void)
 					.nb_in_progress_mes = -1,
 					.nb_aborted_mes = -1},
 		.logbook_mutex = -1,
-		.logs_eng_counter = -1,
-    	.logs_eng = &dummy_log2,
-
 		.logs_eng_counter = 1,
 		.logs_eng = &dummy_log2,
 
@@ -82,20 +75,5 @@ int main(void)
 	unsigned char *msg = (unsigned char *)my_data;
 	deserialize(logbook2, msg, length);
 
-
-	/*CLOSE THESE 3 LINES TO NOT USE FILE SYSTEM, AND OPEN THE ABOVE 3 LINES.*/
-	// serialize_logbook_to_file("salih.bin", logbook);
-	// /*to look: hexdump -C salih.bin*/
-	// deserialize_logbook_from_file("salih.bin", &logbook2);
-
-	// print_sizes_of_types();
-
-	// int64_t i = 0;
-	// for (i = 0; i < 5; i++)
-	// {
-	// 	printf("merhaba [%ld]\n", i);
-	// }
-
-
-	return EXIT_SUCCESS;
+	return 0;
 }

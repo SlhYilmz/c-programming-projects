@@ -2,6 +2,7 @@
 *.o
 *.obj
 *.exe
+build/
 
 # Extensionless targets produced by the existing makefiles
 main
